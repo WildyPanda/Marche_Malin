@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "402083965163",
+    "project_id": "marche-malin",
+    "storage_bucket": "marche-malin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:402083965163:android:d283d8f6ac71643679b6ae",
+        "android_client_info": {
+          "package_name": "com.example.marche_malin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoqKNTU5SoIF6jUu4APctvktYNlF4xBjY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
