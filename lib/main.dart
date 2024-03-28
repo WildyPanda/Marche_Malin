@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:marche_malin/models/TopMenu.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:marche_malin/models/TopMenuAppBar.dart';
+import 'package:marche_malin/ui/login.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -46,8 +48,16 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: TopMenu(),
+      appBar: TopMenuAppBar(),
+      body: Container(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(context, 
+              MaterialPageRoute(builder: (context) => const Login())
+            );
+          },
+          child: const Text("Login"),
+        ),
       ),
     );
   }
