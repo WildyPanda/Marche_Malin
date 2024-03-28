@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:marche_malin/models/TopMenu.dart';
 
 class TopMenuAppBar extends StatelessWidget implements PreferredSizeWidget {
-  TopMenuAppBar({super.key});
+  const TopMenuAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,5 +11,5 @@ class TopMenuAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

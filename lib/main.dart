@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:marche_malin/models/TopMenu.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:marche_malin/models/TopMenuAppBar.dart';
 import 'package:marche_malin/ui/login.dart';
@@ -48,7 +47,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TopMenuAppBar(),
+      appBar: const TopMenuAppBar(),
       body: Container(
         child: ElevatedButton(
           onPressed: () {

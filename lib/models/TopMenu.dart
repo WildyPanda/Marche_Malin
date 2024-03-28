@@ -1,9 +1,6 @@
 
-import 'dart:html';
-import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:marche_malin/ui/login.dart';
 
@@ -47,6 +44,12 @@ class _TopMenuState extends State<TopMenu> {
         ),
         Visibility(
           visible: !widget.logged,
+          replacement: ElevatedButton(
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+              },
+              child: const Text("Log out")
+          ),
           child: ElevatedButton(
             onPressed: () {
               Navigator.push(context,
@@ -54,12 +57,6 @@ class _TopMenuState extends State<TopMenu> {
               );
             },
             child: const Text("Login"),
-          ),
-          replacement: ElevatedButton(
-              onPressed: () async {
-                await FirebaseAuth.instance.signOut();
-              },
-              child: Text("Log out")
           ),
         ),
 
