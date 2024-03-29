@@ -20,6 +20,8 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final EmailTextController = TextEditingController();
   final PasswordTextController = TextEditingController();
+  final PhoneTextController = TextEditingController();
+  final UsernameTextController = TextEditingController();
   bool ModifyingUsername = false;
   bool ModifyingEmail = false;
   bool ModifyingPhone = false;
@@ -32,6 +34,19 @@ class _ProfilePageState extends State<ProfilePage> {
     var resp = await http.get(globals.getUrl("user/get"), headers: header);
     var json = jsonDecode(utf8.decode(resp.bodyBytes));
     return AppUser.fromJson(json);
+  }
+
+  Future<void> SavePhone() async {
+    var header = globals.getHeaderContentType();
+    SavePhoneDTO body = SavePhoneDTO(PhoneTextController.text);
+    http.post(globals.getUrl("user/UpdatePhoneNb"), headers: header, body: json.encode(body.toJson()));
+  }
+
+  Future<void> SaveUsername() async {
+    print("ok");
+    var header = globals.getHeaderContentType();
+    SaveUsernameDTO body = SaveUsernameDTO(UsernameTextController.text);
+    http.post(globals.getUrl("user/UpdateUsername"), headers: header, body: json.encode(body.toJson()));
   }
 
   @override
@@ -74,7 +89,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ElevatedButton(
                           onPressed: () async {
                             var fbFutureUser = await FirebaseAuth.instance.signInWithEmailAndPassword(
-                                email: data!.email,
+                                email: data.email,
                                 password: PasswordTextController.text
                             );
                             var fbUser = fbFutureUser.user;
@@ -91,16 +106,68 @@ class _ProfilePageState extends State<ProfilePage> {
                               });
                             }
                           },
-                          child: Text("Save email")
+                          child: Text("Sauvegarder")
                       )
                     ],
                   );
                 }
                 else if(ModifyingPhone){
-                  return Text("Phone");
+                  PhoneTextController.text = data!.phone;
+                  return Column(
+                    children: [
+                      Text("Nouveau numero de telephone"),
+                      Visibility(
+                        visible: res != "",
+                        child: Text(res),
+                      ),
+                      TextFormField(
+                        controller: PhoneTextController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: "Nouveau numero de telephone",
+                        ),
+                      ),
+                      ElevatedButton(
+                          onPressed: () async {
+                            await SavePhone();
+                            setState(() {
+                              ModifyingPhone = false;
+                              user = getUser();
+                            });
+                          },
+                          child: Text("Sauvegarder")
+                      )
+                    ],
+                  );
                 }
                 else if(ModifyingUsername){
-                  return Text("Username");
+                  UsernameTextController.text = data!.username;
+                  return Column(
+                    children: [
+                      Text("Nouveau nom d'utilisateur"),
+                      Visibility(
+                        visible: res != "",
+                        child: Text(res),
+                      ),
+                      TextFormField(
+                        controller: UsernameTextController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: "Nouveau nom d'utilisateur",
+                        ),
+                      ),
+                      ElevatedButton(
+                          onPressed: () async {
+                            await SaveUsername();
+                            setState(() {
+                              ModifyingUsername = false;
+                              user = getUser();
+                            });
+                          },
+                          child: Text("Sauvegarder")
+                      )
+                    ],
+                  );
                 }
                 else{
                   return Column(
