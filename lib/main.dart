@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:marche_malin/models/TopMenuAppBar.dart';
 import 'package:marche_malin/ui/login.dart';
+import 'package:marche_malin/ui/test.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'globals.dart' as globals;
 
 
 void main() async {
@@ -11,13 +13,13 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseAuth.instance
-      .authStateChanges()
-      .listen((User? user) {
-        // called when the lsitener is registered, when the user log in and when he log out
-    if (user == null) {
-      print('User is currently signed out!');
-    } else {
-      print('User is signed in!');
+      .idTokenChanges()
+      .listen((User? user) async {
+    if (user != null) {
+      globals.token = (await user.getIdToken())!;
+    }
+    else{
+      globals.token = "";
     }
   });
   runApp(const MarcheMalin());
@@ -52,10 +54,10 @@ class HomePage extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () {
             Navigator.push(context, 
-              MaterialPageRoute(builder: (context) => const Login())
+              MaterialPageRoute(builder: (context) => const TestPage())
             );
           },
-          child: const Text("Login"),
+          child: const Text("Test page"),
         ),
       ),
     );

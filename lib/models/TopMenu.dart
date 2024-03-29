@@ -9,10 +9,6 @@ class TopMenu extends StatefulWidget {
 
   TopMenu({super.key});
 
-  void updateLogIn(bool logged){
-    this.logged = logged;
-  }
-
   @override
   State<TopMenu> createState() => _TopMenuState();
 }
