@@ -54,7 +54,20 @@ class _PostPageState extends State<PostPage> {
                     }),
                 ),
                 // The message
-                Expanded(child: Text(post.message)),
+                Expanded(child: Column(
+                  children: [
+                    // idea : make clickable with link to user page
+                    Builder(builder: (context){
+                      if(post.user.username != ""){
+                        return Text(post.user.username);
+                      }
+                      else{
+                        return Text(post.user.email);
+                      }
+                    }),
+                    Text(post.message),
+                  ],
+                )),
                 // The categories
                 // Try to make them clickable to search by categories
                 // The Listview must be in a widget with defined size, else it create errors
