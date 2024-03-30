@@ -1,46 +1,63 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+import 'dart:io' as Io;
+import 'dart:typed_data';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
+import 'package:image_input/image_input.dart';
 import 'package:marche_malin/models/TopMenuAppBar.dart';
-import '../globals.dart' as globals;
+import 'package:marche_malin/services/service.dart';
 
-
-class TestPage extends StatefulWidget {
-  const TestPage({super.key});
+class AddImagePage extends StatefulWidget {
+  const AddImagePage({super.key});
 
   @override
-  State<TestPage> createState() => _TestPageState();
+  State<AddImagePage> createState() => _AddImagePageState();
 }
+/////////////////////////////////////////////////////////////////////
+//////// ATTENTION NE PAS SUPPRIMER AVANT D'AVOIR IMPLEMENTER UN AJOUT D'IMAGE DANS LE FRONT
+/////////////////////////////////////////////////////////////////////
 
-class _TestPageState extends State<TestPage> {
-  // "localhost:8081", "test" correspond to localhost:8081/test
-  final url = Uri.http("localhost:8081", "test");
-  String response = "";
+class _AddImagePageState extends State<AddImagePage> {
+  List<XFile> images = [];
 
-  Future<void> testRequest() async {
-    final user = await FirebaseAuth.instance.currentUser!;
-    final token = await user.getIdToken();
-
-    final header = { "authorization": 'Bearer ${globals.token}' };
-
-    var resp = await http.post(url, headers: header);
-    print(resp);
-    setState(() {
-      response = resp.body;
-    });
-
-  }
-
+  //Post post;
   @override
   Widget build(BuildContext context) {
-    testRequest();
     return Scaffold(
       appBar: TopMenuAppBar(),
-      body: Visibility(
-        visible: response != "",
-        replacement: Text("No response for now"),
-        child: Text("Response : $response"),
+      body: Column(
+        children: [
+          ImageInput(
+            allowEdit: true,
+            allowMaxImage: 3,
+            initialImages: images,
+            onImageSelected: (image, index) {
+              if(!images.contains(image)){
+                setState(() {
+                  images.add(image);
+                });
+              }
+            },
+            onImageRemoved: (image, index) {
+              if(images.contains(image)){
+                setState(() {
+                  images.remove(image);
+                });
+              }
+            },
+
+          ),
+          ElevatedButton(
+              onPressed: () {
+                for (var element in images) {
+                  AddImage(element);
+                }
+              },
+              child: const Text("Ajouter image")
+          )
+        ],
       ),
     );
   }

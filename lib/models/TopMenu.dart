@@ -4,17 +4,10 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:marche_malin/models/dtos/UserDTOs.dart';
+import 'package:marche_malin/services/service.dart';
 import 'package:marche_malin/ui/login.dart';
 import 'package:marche_malin/ui/profile.dart';
 import '../globals.dart' as globals;
-import 'package:http/http.dart' as http;
-
-void SaveEmail(String? email) async {
-  var header = globals.getHeaderContentType();
-  SaveEmailDTO body = SaveEmailDTO(email!);
-  http.post(globals.getUrl("user/UpdateEmail"), headers: header, body: json.encode(body.toJson()));
-}
 
 class TopMenu extends StatefulWidget {
   bool logged = false;
@@ -28,6 +21,7 @@ class TopMenu extends StatefulWidget {
 class _TopMenuState extends State<TopMenu> {
   @override
   Widget build(BuildContext context) {
+    // listen for when the user change and if the mail has changed update it.
     FirebaseAuth.instance.userChanges()
         .listen((User? user) {
       if(user != null){
@@ -38,6 +32,7 @@ class _TopMenuState extends State<TopMenu> {
         }
       }
     });
+
     FirebaseAuth.instance
         .authStateChanges()
         .listen((User? user) {

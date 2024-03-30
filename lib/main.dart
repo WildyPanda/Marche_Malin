@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:marche_malin/models/TopMenuAppBar.dart';
 import 'package:marche_malin/models/dtos/UserDTOs.dart';
 import 'package:marche_malin/ui/login.dart';
+import 'package:marche_malin/ui/post.dart';
 import 'package:marche_malin/ui/test.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -57,10 +58,10 @@ class HomePage extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () {
             Navigator.push(context, 
-              MaterialPageRoute(builder: (context) => const TestPage())
+              MaterialPageRoute(builder: (context) => const PostPage())
             );
           },
-          child: const Text("Test page"),
+          child: const Text("Post page"),
         ),
       ),
     );

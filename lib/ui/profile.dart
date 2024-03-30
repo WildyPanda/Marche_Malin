@@ -8,6 +8,7 @@ import 'package:marche_malin/models/TopMenuAppBar.dart';
 import 'package:marche_malin/models/dtos/UserDTOs.dart';
 import 'package:marche_malin/models/user.dart';
 import 'package:http/http.dart' as http;
+import 'package:marche_malin/services/service.dart';
 import '../globals.dart' as globals;
 
 class ProfilePage extends StatefulWidget {
@@ -28,13 +29,6 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<AppUser> user = getUser();
   String res = "";
   var listen;
-
-  static Future<AppUser> getUser() async {
-    var header = globals.getHeader();
-    var resp = await http.get(globals.getUrl("user/get"), headers: header);
-    var json = jsonDecode(utf8.decode(resp.bodyBytes));
-    return AppUser.fromJson(json);
-  }
 
   Future<void> SavePhone() async {
     var header = globals.getHeaderContentType();
