@@ -36,7 +36,7 @@ class _PostPageState extends State<PostPage> {
             return Column(
               children: [
                 // The title
-                Expanded(child: Text(post!.titre)),
+                Expanded(child: Text(post!.title)),
                 // The images
                 // The Listview must be in a widget with defined size, else it create errors
                 Expanded(

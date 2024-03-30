@@ -11,4 +11,13 @@ class AppUser{
     this.email = json["email"]??"",
     this.phone = json["phoneNb"]??"";
 
+  Map<String, dynamic> toJson(){
+    return {
+      "uuid" : this.uuid,
+      "username" : this.username,
+      "email" : this.email,
+      "phone" : this.phone
+    };
+  }
+
 }

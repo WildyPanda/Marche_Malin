@@ -1,7 +1,22 @@
 library globals;
 
+import 'package:firebase_auth/firebase_auth.dart';
+
 String token = "";
 String email = "";
+bool logged = false;
+
+init(){
+  FirebaseAuth.instance
+      .authStateChanges()
+      .listen((User? user) {
+    if (user == null){
+      logged = false;
+    } else {
+      logged = true;
+    }
+  });
+}
 
 getHeader(){
   return {

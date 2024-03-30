@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:marche_malin/models/TopMenuAppBar.dart';
 import 'package:marche_malin/ui/register.dart';
+import '../globals.dart' as globals;
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -13,42 +14,21 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  bool logged = false;
-
   final emailTextController = TextEditingController();
   final passwordTextController = TextEditingController();
   String loginResult = "";
 
-  var listen;
-
   @override
   void dispose() {
-    if(listen != null){
-      listen.cancel();
-    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    listen = FirebaseAuth.instance
-        .authStateChanges()
-        .listen((User? user) {
-      // called when the lsitener is registered, when the user log in and when he log out
-      if (user == null) {
-        setState(() {
-          logged = false;
-        });
-      } else {
-        setState(() {
-          logged = true;
-        });
-      }
-    });
     return Scaffold(
       appBar: const TopMenuAppBar(),
       body: Visibility(
-        visible: !logged,
+        visible: !globals.logged,
         replacement: const Text("Vous etes deja connecté"),
         child: Column(
           children: [

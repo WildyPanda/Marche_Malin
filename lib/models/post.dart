@@ -6,17 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:marche_malin/models/user.dart';
 
 class Post{
-  String titre;
+  String title;
   AppUser user;
   List<Image> images;
   String message;
   List<String> tags;
   List<String> categories;
 
-  Post({required this.titre, required this.user, required this.images, required this.message, required this.tags, required this.categories});
+  Post({required this.title, required this.user, required this.images, required this.message, required this.tags, required this.categories});
 
   Post.fromJson(Map<String, dynamic> json):
-    this.titre = json['titre']??"",
+    this.title = json['title']??"",
     this.user = AppUser.fromJson(json['user']),
     this.message = json['message']??"",
     this.tags = getStrings(json['tags']??[]),

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:image_input/image_input.dart';
+import 'package:marche_malin/models/dtos/CreatePostDTO.dart';
 import 'package:marche_malin/models/dtos/UserDTOs.dart';
 import 'package:marche_malin/models/post.dart';
 import 'package:marche_malin/models/user.dart';
@@ -42,4 +43,20 @@ Future<Post> getPost(int id) async{
   var resp = await http.get(globals.getUrl("posts/public/get/$id"), headers: header);
   var json = jsonDecode(utf8.decode(resp.bodyBytes));
   return Post.fromJson(json);
+}
+
+Future<List<String>> getCategories() async {
+  var header = globals.getHeader();
+  var resp = await http.get(globals.getUrl("category/public/getAll"), headers: header);
+  List<dynamic> categoriesJson = jsonDecode(utf8.decode(resp.bodyBytes));
+  List<String> categories = [];
+  for(String elt in categoriesJson){
+    categories.add(elt);
+  }
+  return categories;
+}
+
+Future<void> createPost(CreatePostDTO dto) async {
+  var header = globals.getHeaderContentType();
+  var resp = await http.post(globals.getUrl("posts/add"), headers: header, body: json.encode( await dto.toJson()));
 }
