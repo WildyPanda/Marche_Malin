@@ -33,8 +33,6 @@ class _PostPageState extends State<PostPage> {
         builder: (context, snapshot){
           if(snapshot.hasData){
             Post? post = snapshot.data;
-            print(post?.images.length);
-
             return Column(
               children: [
                 // The title
