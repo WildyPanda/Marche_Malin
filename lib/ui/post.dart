@@ -4,6 +4,7 @@ import 'dart:io' as Io;
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,9 +12,12 @@ import 'package:image_input/image_input.dart';
 import 'package:marche_malin/models/TopMenuAppBar.dart';
 import 'package:marche_malin/models/post.dart';
 import 'package:marche_malin/services/service.dart';
+import 'package:marche_malin/ui/EditPost.dart';
 
 class PostPage extends StatefulWidget {
-  const PostPage({super.key});
+  final int postIndex;
+
+  const PostPage({super.key, required this.postIndex});
 
   @override
   State<PostPage> createState() => _PostPageState();
@@ -25,33 +29,47 @@ class _PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
-    futPost ??= getPost(0);
+    futPost ??= getPost(widget.postIndex);
     return Scaffold(
       appBar: TopMenuAppBar(),
       body: FutureBuilder(
         future: futPost,
         builder: (context, snapshot){
-          if(snapshot.hasData){
+          if(snapshot.data != null){
             Post? post = snapshot.data;
             return Column(
               children: [
+                Visibility(
+                  visible: post?.user.uuid == FirebaseAuth.instance.currentUser?.uid,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return EditPost(post: post!);
+                        }));
+                        setState(() {
+                          futPost = getPost(widget.postIndex);
+                        });
+                      },
+                      child: Text("Editer"),
+                    )
+                ),
                 // The title
                 Expanded(child: Text(post!.title)),
                 // The images
                 // The Listview must be in a widget with defined size, else it create errors
                 Expanded(
                   child: Builder(builder: (context){
-                      return ListView.builder(
-                        itemCount: post.images.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index){
-                          return Image(
-                            image: post.images[0].image,
-                            fit: BoxFit.cover,
-                          );
-                        },
-                      );
-                    }),
+                    return ListView.builder(
+                      itemCount: post.images.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index){
+                        return Image(
+                          image: post.images[0].image,
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    );
+                  }),
                 ),
                 // The message
                 Expanded(child: Column(

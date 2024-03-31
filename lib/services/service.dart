@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:image_input/image_input.dart';
 import 'package:marche_malin/models/dtos/CreatePostDTO.dart';
+import 'package:marche_malin/models/dtos/ModifyPostDTO.dart';
 import 'package:marche_malin/models/dtos/UserDTOs.dart';
 import 'package:marche_malin/models/post.dart';
 import 'package:marche_malin/models/user.dart';
@@ -59,4 +60,12 @@ Future<List<String>> getCategories() async {
 Future<void> createPost(CreatePostDTO dto) async {
   var header = globals.getHeaderContentType();
   var resp = await http.post(globals.getUrl("posts/add"), headers: header, body: json.encode( await dto.toJson()));
+}
+
+Future<void> modifyPost(ModifyPostDTO dto) async {
+  var header = globals.getHeaderContentType();
+  var resp = await http.post(globals.getUrl("posts/modify"), headers: header, body: json.encode( await dto.toJson()));
+  // CREER endpoint modify dans post controller
+  // pour les images voir si il y a un moyen de verifier les existantes sinon supprimer toutes les images et enregistrer les nouvelles a la place
+  // pour les tags / categories : si existe -> ignore sinon -> creer. comme dans CreatePost.
 }
