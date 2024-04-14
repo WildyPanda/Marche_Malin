@@ -1,5 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_input/image_input.dart';
 import 'package:marche_malin/models/TopMenuAppBar.dart';
@@ -8,7 +6,7 @@ import 'package:marche_malin/services/service.dart';
 import '../globals.dart' as globals;
 
 class CreatePost extends StatefulWidget {
-  const CreatePost({super.key});
+  const CreatePost({Key? key}) : super(key: key);
 
   @override
   State<CreatePost> createState() => _CreatePostState();
@@ -24,145 +22,151 @@ class _CreatePostState extends State<CreatePost> {
   List<bool> categoriesCheck = [];
   String res = "";
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TopMenuAppBar(),
-      body: Visibility(
-        visible: globals.logged,
-        replacement: Center(
-          child: Text("Vous devez etre connecté pour creer une annonce"),
-        ),
-        child: Column(
-          children: [
-            Visibility(
-              visible: this.res != "",
-              child: Text(res),
-            ),
-            TextFormField(
-              controller: titleController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Title',
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Visibility(
+          visible: globals.logged,
+          replacement: Center(
+            child: Text("Vous devez être connecté pour créer une annonce"),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (res.isNotEmpty) Text(res),
+              TextFormField(
+                controller: titleController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Titre',
+                ),
               ),
-            ),
-            ImageInput(
-              allowEdit: true,
-              allowMaxImage: 5,
-              initialImages: images,
-              onImageSelected: (image, index) {
-                if(!images.contains(image)){
-                  setState(() {
-                    images.add(image);
-                  });
-                }
-              },
-              onImageRemoved: (image, index) {
-                if(images.contains(image)){
-                  setState(() {
-                    images.remove(image);
-                  });
-                }
-              },
-
-            ),
-            TextFormField(
-              controller: messageController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Message',
+              const SizedBox(height: 10),
+              ImageInput(
+                allowEdit: true,
+                allowMaxImage: 5,
+                initialImages: images,
+                onImageSelected: (image, index) {
+                  if (!images.contains(image)) {
+                    setState(() {
+                      images.add(image);
+                    });
+                  }
+                },
+                onImageRemoved: (image, index) {
+                  if (images.contains(image)) {
+                    setState(() {
+                      images.remove(image);
+                    });
+                  }
+                },
               ),
-            ),
-            TextFormField(
-              controller: tagsController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Tags : tag1, tag2, etc',
+              const SizedBox(height: 10),
+              TextFormField(
+                controller: messageController,
+                maxLines: null,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Message',
+                ),
               ),
-            ),
-            Expanded(
+              const SizedBox(height: 10),
+              TextFormField(
+                controller: tagsController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Tags : tag1, tag2, etc',
+                ),
+              ),
+              Expanded(
                 child: FutureBuilder(
                   future: futCategories,
-                  builder: (context, snapshot){
-                    if(snapshot.hasData){
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
                       categories = snapshot.data!;
-                      if(categories!.length != categoriesCheck.length){
-                        for(int i =0; i < categories!.length; i++){
-                          categoriesCheck.add(false);
-                        }
+                      if (categoriesCheck.isEmpty) {
+                        categoriesCheck = List<bool>.filled(categories.length, false);
                       }
                       return ListView.builder(
-                          itemCount: categories.length,
-                          itemBuilder: (builder, index){
-                            return CheckboxListTile(
-                                title: Text(categories[index]),
-                                value: categoriesCheck[index],
-                                onChanged: (value){
-                                  setState(() {
-                                    categoriesCheck[index] = value!;
-                                  });
-                                }
-                            );
-                          }
+                        itemCount: categories.length,
+                        itemBuilder: (builder, index) {
+                          return CheckboxListTile(
+                            title: Text(categories[index]),
+                            value: categoriesCheck[index],
+                            onChanged: (value) {
+                              setState(() {
+                                categoriesCheck[index] = value!;
+                              });
+                            },
+                          );
+                        },
                       );
-                    }
-                    else if(snapshot.hasError){
+                    } else if (snapshot.hasError) {
                       print(snapshot.error);
                       return const Center(
-                        child: Text("Impossible de recuperrer les données"),
+                        child: Text("Impossible de récupérer les données"),
                       );
                     }
-                    return const CircularProgressIndicator();
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
                   },
-                )
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                // verification des input
-                if(titleController.text == ""){
-                  setState(() {
-                    res = "Le titre doit etre renseigné";
-                  });
-                  return;
-                }
-                if(messageController.text == ""){
-                  setState(() {
-                    res = "Le message doit etre renseigné";
-                  });
-                  return;
-                }
-                if(tagsController.text == ""){
-                  setState(() {
-                    res = "Les tags doivent etre renseigné";
-                  });
-                  return;
-                }
-                List<String> nonTrimedTags = tagsController.text.split(",");
-                List<String> tags = [];
-                for (var element in nonTrimedTags) {tags.add(element.trim());}
-                List<String> categoriesDto = [];
-                print(categories.length);
-                print(categoriesCheck.length);
-                if(categories.length != categoriesCheck.length){
-                  setState(() {
-                    res = "Internal error : categories.length != categoriesCheck.length";
-                  });
-                  return;
-                }
-                for(int i = 0; i < categories.length; i++){
-                  if(categoriesCheck[i]){
-                    categoriesDto.add(categories[i]);
-                  }
-                }
-                CreatePostDTO dto = CreatePostDTO(title: titleController.text, user: await getUser(), images: images, message: messageController.text, tags: tags, categories: categoriesDto);
-                createPost(dto);
-              },
-              child: const Text("Creer l'annonce")
-            )
-          ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              Align(
+                alignment: Alignment.center,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (titleController.text.isEmpty ||
+                        messageController.text.isEmpty ||
+                        tagsController.text.isEmpty) {
+                      setState(() {
+                        res = "Tous les champs doivent être renseignés";
+                      });
+                      return;
+                    }
+                    List<String> tags = tagsController.text.split(',').map((tag) => tag.trim()).toList();
+                    List<String> categoriesDto = [];
+                    for (int i = 0; i < categories.length; i++) {
+                      if (categoriesCheck[i]) {
+                        categoriesDto.add(categories[i]);
+                      }
+                    }
+                    CreatePostDTO dto = CreatePostDTO(
+                      title: titleController.text,
+                      user: await getUser(),
+                      images: images,
+                      message: messageController.text,
+                      tags: tags,
+                      categories: categoriesDto,
+                    );
+                    await createPost(dto);
+                    // Réinitialisation des champs après la soumission
+                    setState(() {
+                      titleController.clear();
+                      messageController.clear();
+                      tagsController.clear();
+                      images.clear();
+                      categoriesCheck = List<bool>.filled(categories.length, false);
+                    });
+                  },
+                  child: const Text("Créer l'annonce"),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.black, backgroundColor: Colors.orange.shade700,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      )
+      ),
     );
   }
 }

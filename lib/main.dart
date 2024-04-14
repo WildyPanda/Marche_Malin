@@ -6,9 +6,7 @@ import 'package:marche_malin/models/TopMenuAppBar.dart';
 import 'package:marche_malin/models/dtos/UserDTOs.dart';
 import 'package:marche_malin/ui/Search.dart';
 import 'package:marche_malin/ui/create_post.dart';
-import 'package:marche_malin/ui/login.dart';
 import 'package:marche_malin/ui/post.dart';
-import 'package:marche_malin/ui/test.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'globals.dart' as globals;
@@ -58,31 +56,94 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: const TopMenuAppBar(),
       body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Center(
+          child:
           ElevatedButton(
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const PostPage(postIndex: 0,))
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PostPage(postIndex: 1)),
               );
             },
-            child: const Text("Post page"),
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.black, backgroundColor: Colors.orange.shade700, // Texte noir
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10), // Border radius de 10px
+              ),
+              padding: EdgeInsets.symmetric(vertical: 20), // Padding vertical
+            ),
+            child: const SizedBox(
+              width: 250, // Largeur du bouton pour remplir la largeur disponible
+              height: 50, // Hauteur fixe du bouton (60 pixels)
+              child: Center(
+                child: Text(
+                  "Mes annonces",
+                  style: TextStyle(fontSize: 18), // Taille de texte plus grande
+                ),
+              ),
+            ),
           ),
+          ),
+          const SizedBox(height: 16),
+          Center(
+            child:
           ElevatedButton(
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const CreatePost())
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const CreatePost()),
               );
             },
-            child: const Text("Creer annonce"),
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.black, backgroundColor: Colors.orange.shade700, // Texte noir
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10), // Border radius de 10px
+              ),
+              padding: EdgeInsets.symmetric(vertical: 20), // Padding vertical
+            ),
+            child: const SizedBox(
+              width: 250, // Largeur du bouton pour remplir la largeur disponible
+              height: 50, // Hauteur fixe du bouton (60 pixels)
+              child: Center(
+                child: Text(
+                  "Créer une annonce",
+                  style: TextStyle(fontSize: 18), // Taille de texte plus grande
+                ),
+              ),
+            ),
           ),
+          ),
+          const SizedBox(height: 16),
+          Center(
+          child:
           ElevatedButton(
             onPressed: () {
-              Navigator.push(context,
+              Navigator.push(
+                context,
                   MaterialPageRoute(builder: (context) => SearchPage())
               );
             },
-            child: const Text("search"),
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.black, backgroundColor: Colors.orange.shade700, // Texte noir
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10), // Border radius de 10px
+              ),
+              padding: EdgeInsets.symmetric(vertical: 20), // Padding vertical
+            ),
+            child: const SizedBox(
+              width: 250, // Largeur du bouton pour remplir la largeur disponible
+              height: 50, // Hauteur fixe du bouton (60 pixels)
+              child: Center(
+                child: Text(
+                  "Rechercher une annonce",
+                  style: TextStyle(fontSize: 18), // Taille de texte plus grande
+                ),
+              ),
+            ),
           ),
+          )
         ]
       ),
     );

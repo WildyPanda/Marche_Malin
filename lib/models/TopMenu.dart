@@ -1,5 +1,3 @@
-
-
 import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,74 +8,80 @@ import 'package:marche_malin/ui/profile.dart';
 import '../globals.dart' as globals;
 
 class TopMenu extends StatefulWidget {
-  bool logged = false;
-
-  TopMenu({super.key});
+  const TopMenu({Key? key}) : super(key: key);
 
   @override
   State<TopMenu> createState() => _TopMenuState();
 }
 
 class _TopMenuState extends State<TopMenu> {
+  bool logged = false;
+
   @override
   Widget build(BuildContext context) {
-    // listen for when the user change and if the mail has changed update it.
-    FirebaseAuth.instance.userChanges()
-        .listen((User? user) {
-      if(user != null){
-        if(globals.email != user.email){
-          globals.email = user.email!;
-          print(user.email);
-          SaveEmail(user.email);
+    // Listen for user changes and update email if necessary
+    FirebaseAuth.instance.userChanges().listen((User? user) {
+      if (user != null) {
+        if (globals.email != user.email) {
+          setState(() {
+            globals.email = user.email!;
+            print(user.email);
+            SaveEmail(user.email);
+          });
         }
       }
     });
 
-    FirebaseAuth.instance
-        .authStateChanges()
-        .listen((User? user) {
-      // called when the listener is registered, when the user log in and when he log out
-      if (user == null) {
-        setState(() {
-          widget.logged = false;
-        });
-      } else {
-        setState(() {
-          widget.logged = true;
-        });
-      }
+    // Listen for authentication state changes
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      setState(() {
+        logged = user != null;
+      });
     });
-    return Row(
-      children: [
-        const Text("Menu"),
-        const Expanded(child:
-        Center(
-          child: Text("Marche Malin"),
-        ),
-        ),
-        Visibility(
-          visible: !widget.logged,
-          replacement: ElevatedButton(
-              onPressed: () async {
-                /*await FirebaseAuth.instance.signOut();*/
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const ProfilePage())
+
+    return Container(
+      child: Row(
+        children: [
+          Expanded(
+            child: Center(
+              child: Text("Marché Malin"),
+            ),
+          ),
+          Visibility(
+            visible: !logged,
+            replacement: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
                 );
               },
-              child: const Text("Profile")
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.black, backgroundColor: Colors.orange.shade700, // Texte noir
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(3), // Border radius de 3px
+                ),
+              ),
+              child: const Text("Profil"),
+            ),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Login()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.black, backgroundColor: Colors.orange.shade700, // Texte noir
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(3), // Border radius de 3px
+                ),
+              ),
+              child: const Text("Se connecter"),
+            ),
           ),
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const Login())
-              );
-            },
-            child: const Text("Login"),
-          ),
-        ),
-
-      ],
+        ],
+      ),
     );
   }
-
 }
