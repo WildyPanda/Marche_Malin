@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:marche_malin/models/TopMenuAppBar.dart';
 import 'package:marche_malin/models/dtos/UserDTOs.dart';
+import 'package:marche_malin/ui/Search.dart';
 import 'package:marche_malin/ui/create_post.dart';
 import 'package:marche_malin/ui/login.dart';
 import 'package:marche_malin/ui/post.dart';
@@ -73,6 +74,14 @@ class HomePage extends StatelessWidget {
               );
             },
             child: const Text("Creer annonce"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SearchPage())
+              );
+            },
+            child: const Text("search"),
           ),
         ]
       ),

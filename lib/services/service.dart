@@ -1,9 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:image_input/image_input.dart';
+import 'package:marche_malin/models/basicPost.dart';
 import 'package:marche_malin/models/dtos/CreatePostDTO.dart';
 import 'package:marche_malin/models/dtos/ModifyPostDTO.dart';
+import 'package:marche_malin/models/dtos/SearchPostsDTO.dart';
 import 'package:marche_malin/models/dtos/UserDTOs.dart';
 import 'package:marche_malin/models/post.dart';
 import 'package:marche_malin/models/user.dart';
@@ -68,4 +71,18 @@ Future<void> modifyPost(ModifyPostDTO dto) async {
   // CREER endpoint modify dans post controller
   // pour les images voir si il y a un moyen de verifier les existantes sinon supprimer toutes les images et enregistrer les nouvelles a la place
   // pour les tags / categories : si existe -> ignore sinon -> creer. comme dans CreatePost.
+}
+
+Future<List<BasicPost>> searchPost(String title, List<String> tags, List<String> categories) async {
+  SearchPostsDTO dto = SearchPostsDTO(title: title, tags: tags, categories: categories);
+  var header = globals.getHeaderContentType();
+  var resp = await http.post(globals.getUrl("posts/public/SearchPosts"), body: json.encode(dto.toJson()), headers: header);
+  List<dynamic> jsonList = jsonDecode(utf8.decode(resp.bodyBytes));
+  print(jsonList.length);
+  print(utf8.decode(resp.bodyBytes));
+  List<BasicPost> posts = [];
+  for(dynamic elt in jsonList){
+    posts.add(BasicPost.fromJson(elt));
+  }
+  return posts;
 }
