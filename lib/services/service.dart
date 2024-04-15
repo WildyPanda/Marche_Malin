@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_input/image_input.dart';
 import 'package:marche_malin/models/basicPost.dart';
@@ -49,6 +51,18 @@ Future<Post> getPost(int id) async{
   return Post.fromJson(json);
 }
 
+Future<List<BasicPost>> getUserPost(String? uuid) async{
+  uuid ??= FirebaseAuth.instance.currentUser?.uid;
+  var header = globals.getHeader();
+  var resp = await http.get(globals.getUrl("posts/public/getByUser/$uuid"), headers: header);
+  List<dynamic> jsonList = jsonDecode(utf8.decode(resp.bodyBytes));
+  List<BasicPost> posts = [];
+  for(dynamic elt in jsonList){
+    posts.add(BasicPost.fromJson(elt));
+  }
+  return posts;
+}
+
 Future<List<String>> getCategories() async {
   var header = globals.getHeader();
   var resp = await http.get(globals.getUrl("category/public/getAll"), headers: header);
@@ -78,8 +92,6 @@ Future<List<BasicPost>> searchPost(String title, List<String> tags, List<String>
   var header = globals.getHeaderContentType();
   var resp = await http.post(globals.getUrl("posts/public/SearchPosts"), body: json.encode(dto.toJson()), headers: header);
   List<dynamic> jsonList = jsonDecode(utf8.decode(resp.bodyBytes));
-  print(jsonList.length);
-  print(utf8.decode(resp.bodyBytes));
   List<BasicPost> posts = [];
   for(dynamic elt in jsonList){
     posts.add(BasicPost.fromJson(elt));
