@@ -20,34 +20,52 @@ class MyPostsPage extends StatelessWidget {
         replacement: Center(
           child: Text("Vous devez être connecté pour voir vos annonces"),
         ),
-        child: FutureBuilder(
-          future: futPosts,
-          builder: (context, snapshot) {
-            if(snapshot.hasData){
-              List<BasicPost>? posts = snapshot.data;
-              if(posts != null){
-                return ListView.builder(
-                    itemCount: posts.length,
-                    itemBuilder: (builder, index){
-                      return PostListElt(
-                          post: posts[index]
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              const Text("Mes annonces",
+                style: TextStyle(
+                  fontSize: 30,
+                  color: Colors.black
+                ),
+              ),
+              Expanded(child: FutureBuilder(
+                future: futPosts,
+                builder: (context, snapshot) {
+                  if(snapshot.hasData){
+                    List<BasicPost>? posts = snapshot.data;
+                    if(posts != null){
+                      return ListView.builder(
+                          itemCount: posts.length,
+                          itemBuilder: (builder, index){
+                            return Column(
+                              children: [
+                                const SizedBox(height: 10,),
+                                PostListElt(
+                                  post: posts[index],
+                                ),
+                              ],
+                            );
+                          }
                       );
                     }
-                );
-              }
-              else{
-                return Placeholder();
-              }
-            }
-            else if(snapshot.hasError){
-              print(snapshot.error);
-              return const Center(
-                child: Text("Impossible de recuperrer les données"),
-              );
-            }
-            return const CircularProgressIndicator();
-          },
-        ),
+                    else{
+                      return Placeholder();
+                    }
+                  }
+                  else if(snapshot.hasError){
+                    print(snapshot.error);
+                    return const Center(
+                      child: Text("Impossible de recuperrer les données"),
+                    );
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),)
+            ],
+          )
+        )
       )
     );
   }

@@ -25,23 +25,33 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TopMenuAppBar(),
-      body: Column(
-        children: [
-          TextFormField(
-            controller: titleController,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Title',
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            const Text("Rechercher",
+              style: TextStyle(
+                  fontSize: 30,
+                  color: Colors.black
+              ),
             ),
-          ),
-          TextFormField(
-            controller: tagsController,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Tags : tag1, tag2, etc',
+            TextFormField(
+              controller: titleController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Title',
+              ),
             ),
-          ),
-          Expanded(
+            const SizedBox(height: 10),
+            TextFormField(
+              controller: tagsController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Tags : tag1, tag2, etc',
+              ),
+            ),
+            const SizedBox(height: 10),
+            SizedBox(height: 200,
               child: FutureBuilder(
                 future: futCategories,
                 builder: (context, snapshot){
@@ -75,53 +85,61 @@ class _SearchPageState extends State<SearchPage> {
                   }
                   return const CircularProgressIndicator();
                 },
-              )
-          ),
-          ElevatedButton(
-              onPressed: () async {
-                String title = titleController.text;
-                List<String> nonTrimedTags = tagsController.text.split(",");
-                List<String> tags = [];
-                for (var element in nonTrimedTags)
-                {
-                  String trimed = element.trim();
-                  if(trimed != "") {
-                    tags.add(trimed);
+              ),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+                onPressed: () async {
+                  String title = titleController.text;
+                  List<String> nonTrimedTags = tagsController.text.split(",");
+                  List<String> tags = [];
+                  for (var element in nonTrimedTags)
+                  {
+                    String trimed = element.trim();
+                    if(trimed != "") {
+                      tags.add(trimed);
+                    }
                   }
-                }
-                List<String> categoriesDTO = [];
-                for(int i = 0; i < categories.length; i++){
-                  if(categoriesCheck[i]){
-                    categoriesDTO.add(categories[i]);
+                  List<String> categoriesDTO = [];
+                  for(int i = 0; i < categories.length; i++){
+                    if(categoriesCheck[i]){
+                      categoriesDTO.add(categories[i]);
+                    }
                   }
-                }
-                List<BasicPost> posts = await searchPost(title, tags, categoriesDTO);
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage(posts: posts,)));
-              },
-              child: Text("Chercher")
-          ),
-          Expanded(
-              child: Builder(
-                builder: (context){
-                  if(widget.posts != null){
-                    return ListView.builder(
-                        itemCount: widget.posts!.length,
-                        itemBuilder: (builder, index){
-                          return PostListElt(
-                              post: widget.posts![index]
-                          );
-                        }
-                    );
-                  }
-                  else{
-                    return Placeholder();
-                  }
+                  List<BasicPost> posts = await searchPost(title, tags, categoriesDTO);
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage(posts: posts,)));
                 },
-              )
-          )
-        ],
-      ),
+                child: Text("Chercher")
+            ),
+            const SizedBox(height: 10),
+            Expanded(
+                child: Builder(
+                  builder: (context){
+                    if(widget.posts != null){
+                      return ListView.builder(
+                          itemCount: widget.posts!.length,
+                          itemBuilder: (builder, index){
+                            return Column(
+                              children: [
+                                const SizedBox(height: 10,),
+                                PostListElt(
+                                  post: widget.posts![index],
+                                ),
+                              ],
+                            );
+                          }
+                      );
+                    }
+                    else{
+                      return const SizedBox();
+                    }
+                  },
+                )
+            )
+          ],
+        ),
+      )
     );
   }
 }
